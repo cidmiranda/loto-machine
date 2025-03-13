@@ -1,8 +1,6 @@
-import numpy as np
 import pandas as pd
 from keras import Sequential
 from keras.src.layers import Dense
-from keras.src.optimizers import Adam
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MultiLabelBinarizer
 
