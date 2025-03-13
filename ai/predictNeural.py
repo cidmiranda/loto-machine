@@ -15,7 +15,7 @@ except ValueError:
     sys.exit(1)
 
 # Carregar o modelo treinado
-model = load_model('modelo.h5')  # Ou o caminho do seu modelo .h5
+model = load_model('model.h5')  # Ou o caminho do seu modelo .h5
 
 # Quantidade de características esperadas pelo modelo
 expected_features = model.input_shape[1]  # Obtém o número de features esperadas
@@ -29,7 +29,7 @@ if input_data.shape[0] != expected_features:
 input_data = input_data.reshape(1, -1)  # Transforma em matriz 2D para previsão
 
 # Fazer a previsão
-prediction = model.predict(input_data)
+prediction = model.predict(input_data, verbose=0)
 
 # Arredondar e converter para inteiro no intervalo de 1 a 25
 predicted_number = int(round(prediction[0][0]))

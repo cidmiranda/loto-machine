@@ -19,7 +19,7 @@ print(f"Shape de X: {X.shape}")
 print(f"Shape de y: {y.shape}")
 
 # Convertendo os números sorteados para formato binário (One-Hot Encoding)
-mlb = MultiLabelBinarizer(classes=range(1, 16))  # Lotofácil tem números de 1 a 15
+mlb = MultiLabelBinarizer(classes=range(1, 26))  # Lotofácil tem números de 1 a 15
 y_binary = mlb.fit_transform(y)
 
 
@@ -62,7 +62,7 @@ model.add(Dense(64, input_dim=X.shape[1], activation='relu'))
 model.add(Dense(32, activation='relu'))
 
 # Camada de saída com 15 neurônios e ativação sigmoide
-model.add(Dense(25, activation='sigmoid'))  # 15 para 15 números
+model.add(Dense(25, activation='sigmoid'))  # 25 para 25 números
 
 # Compilando o modelo
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])

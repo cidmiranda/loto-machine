@@ -44,8 +44,9 @@ input_numbers = np.array([int(n) for n in input_str.split(",")]).reshape(1, -1)
 # input_data = preprocess_input(input_str)
 
 # Fazer a previsão
+#print("input_numbers:", input_numbers)
 prediction = model.predict(input_numbers, verbose=0)
-
+#print("Previsão:", prediction)
 # Processar a previsão para obter os números inteiros
 #predicted_numbers = process_prediction(prediction)
 
