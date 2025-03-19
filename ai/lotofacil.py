@@ -103,6 +103,34 @@ if verificar_sequencia(sequencia_a_verificar):
 else:
     print("Essa sequência nunca foi sorteada.")
 
+#Quais números acertei no concurso?
+def numeros_sorteados_concurso(df, concurso, sequencia):
+    # Garante que a coluna 'concurso' seja do tipo inteiro
+    df['concurso'] = df['concurso'].astype(int)
+
+    # Localiza a linha correspondente ao concurso
+    sorteio = df[df['concurso'] == int(concurso)]
+
+    if sorteio.empty:
+        return f"Concurso {concurso} não encontrado."
+
+    # Converte os números sorteados em um conjunto
+    numeros_sorteados = set(sorteio.iloc[0]['numeros'])
+
+    # Converte a sequência fornecida em um conjunto
+    sequencia_set = set(sequencia)
+
+    # Retorna a interseção entre os dois conjuntos (números que foram sorteados)
+    return sorted(sequencia_set.intersection(numeros_sorteados))
+
+# Exemplo de uso:
+sequencia_a_verificar = [3, 5, 9, 11, 15, 19, 21, 23, 25, 1, 2, 6, 8, 13, 17]
+concurso_a_verificar = 3339  # Número do concurso a comparar
+
+numeros_acertados = numeros_sorteados_concurso(df, concurso_a_verificar, sequencia_a_verificar)
+print(f"Números sorteados no concurso {concurso_a_verificar} que estão na sequência fornecida: {numeros_acertados}")
+
+
 # 8 Decision tree
 
 # 8.1 Criando as features e as variáveis de saída (targets)

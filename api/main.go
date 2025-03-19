@@ -20,10 +20,23 @@ type Sorteio struct {
 	Concurso int      `json:"concurso" bson:"concurso"`
 	Data     string   `json:"data" bson:"data"`
 	Numeros  []string `json:"numeros" bson:"numeros"`
+	Par      int      `json:"par" bson:"par"`
+	Impar    int      `json:"impar" bson:"impar"`
 }
 
 type InputData struct {
 	Numbers []int `json:"numbers"`
+}
+
+type NumeroFrequencia struct {
+	Numero     int `bson:"_id"`
+	Frequencia int `bson:"frequencia"`
+}
+
+type NumeroFrequencias struct {
+	MaisSorteados  []NumeroFrequencia `bson:"maisSorteados"`
+	MenosSorteados []NumeroFrequencia `bson:"menosSorteados"`
+	Sorteados      []NumeroFrequencia `bson:"sorteados"`
 }
 
 // Conectar ao MongoDB
@@ -56,15 +69,40 @@ func getUltimosSorteios(c *gin.Context) {
 	defer cursor.Close(c)
 
 	var sorteios []Sorteio
+
 	for cursor.Next(c) {
 		var sorteio Sorteio
 		err := cursor.Decode(&sorteio)
 		if err == nil {
+			par, impar := countParImpar(sorteio.Numeros)
+			sorteio.Par = par
+			sorteio.Impar = impar
 			sorteios = append(sorteios, sorteio)
 		}
 	}
 
 	c.JSON(http.StatusOK, sorteios)
+}
+
+// mais saíram (1 a 10)
+// menos saíram (11 a 15)
+// menos saíram (26 a 16)
+// mais saíram (1 a 5)
+// ranking
+func countParImpar(numeros []string) (int, int) {
+	par := 0
+	impar := 0
+	for i := 0; i < len(numeros); i++ {
+		numero := numeros[i]
+		i, _ := strconv.Atoi(numero)
+		if i%2 == 0 {
+			par += 1
+		} else {
+			impar += 1
+		}
+
+	}
+	return par, impar
 }
 
 // Função para buscar um sorteio pelo número do concurso
@@ -85,12 +123,105 @@ func getSorteioPorConcurso(c *gin.Context) {
 	var sorteio Sorteio
 	filter := bson.M{"concurso": concurso}
 	err = collection.FindOne(c, filter).Decode(&sorteio)
+	par, impar := countParImpar(sorteio.Numeros)
+	sorteio.Par = par
+	sorteio.Impar = impar
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Concurso não encontrado"})
 		return
 	}
 
 	c.JSON(http.StatusOK, sorteio)
+}
+
+// Função para calcular a frequência dos números
+func calcularFrequencia(c *gin.Context, collection *mongo.Collection, ordem int, limite int) ([]NumeroFrequencia, error) {
+	// Pipeline de agregação no MongoDB
+	pipeline := mongo.Pipeline{
+		{{Key: "$unwind", Value: "$numeros"}}, // Expande o array de números
+		{{Key: "$group", Value: bson.D{
+			{Key: "_id", Value: "$numeros"},
+			{Key: "frequencia", Value: bson.D{{Key: "$sum", Value: 1}}},
+		}}},
+		{{Key: "$sort", Value: bson.D{{Key: "frequencia", Value: ordem}}}}, // Ordenação (ascendente ou descendente)
+		{{Key: "$limit", Value: limite}},                                   // Pegar os top 5 mais ou menos sorteados
+	}
+
+	// Executar a agregação
+	cursor, err := collection.Aggregate(c, pipeline)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(c)
+
+	// Ler os resultados brutos
+	var rawResults []bson.M
+	if err = cursor.All(c, &rawResults); err != nil {
+		return nil, err
+	}
+
+	// Converter os resultados corretamente
+	var resultados []NumeroFrequencia
+	for _, item := range rawResults {
+		var numeroInt int
+
+		// Tenta converter `_id` para int
+		switch v := item["_id"].(type) {
+		case int32:
+			numeroInt = int(v)
+		case int64:
+			numeroInt = int(v)
+		case string:
+			numeroInt, _ = strconv.Atoi(v) // Converte string para int
+		default:
+			return nil, fmt.Errorf("tipo inesperado de número: %v", item["_id"])
+		}
+
+		// Adiciona ao slice final
+		resultados = append(resultados, NumeroFrequencia{
+			Numero:     numeroInt,
+			Frequencia: int(item["frequencia"].(int32)), // Frequência sempre é número
+		})
+	}
+
+	return resultados, nil
+}
+
+// Função para buscar os núemros que mais saem
+func getNumerosMaisMenosSorteados(c *gin.Context) {
+	client, err := connectMongoDB(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao conectar ao MongoDB"})
+		return
+	}
+	defer client.Disconnect(c)
+
+	collection := client.Database("lotofacil").Collection("resultados")
+
+	// Exibir resultados
+	var retorno NumeroFrequencias
+	numerosMaisSorteados, err := calcularFrequencia(c, collection, -1, 5) // Mais sorteados
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	retorno.MaisSorteados = numerosMaisSorteados
+
+	numerosMenosSorteados, err := calcularFrequencia(c, collection, 1, 5) // Menos sorteados
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	retorno.MenosSorteados = numerosMenosSorteados
+
+	sorteados, err := calcularFrequencia(c, collection, -1, 25) // Todos
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	retorno.Sorteados = sorteados
+
+	c.JSON(http.StatusOK, retorno)
 }
 
 func predictHandler(c *gin.Context) {
@@ -150,8 +281,9 @@ func main() {
 	r.Use(cors.Default())
 
 	// Rotas da API
-	r.GET("/sorteios", getUltimosSorteios)             // Lista os últimos sorteios
-	r.GET("/sorteio/:concurso", getSorteioPorConcurso) // Busca um concurso específico
+	r.GET("/sorteios", getUltimosSorteios)                           // Lista os últimos sorteios
+	r.GET("/sorteios/:concurso", getSorteioPorConcurso)              // Busca um concurso específico
+	r.GET("/sorteios/stats/sorteados", getNumerosMaisMenosSorteados) // Retorna os números mais e menos sorteados
 	r.POST("/predict", predictHandler)
 	// Inicia o servidor na porta 8080
 	r.Run(":8080")
