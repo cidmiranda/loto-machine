@@ -92,7 +92,7 @@ func main() {
 	collection := db.Collection("resultados")
 
 	// Busca o resultado mais recente da Lotofácil
-	for i := 3341; i < 3346; i++ {
+	for i := 3350; i < 3351; i++ {
 		resultado, err := fetchLatestResult(i)
 		if err != nil {
 			log.Fatal("Erro ao buscar o resultado mais recente:", err)
