@@ -2,11 +2,6 @@ import random
 
 import numpy as np
 import pandas as pd
-from matplotlib import pyplot as plt
-from sklearn import tree
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeClassifier
 
 df = pd.read_csv('dataset/lotofacil_historico.csv', header=None)
 # Renomear as colunas

@@ -5,13 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7efaec53-1b2f-42a1-b9f0-89fb1d7a1e1b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/cryptoLSTM.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cryptoRandomForest.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset/lotofacil_historico.csv" beforeDir="false" afterPath="$PROJECT_DIR$/dataset/lotofacil_historico.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lotofacil.py" beforeDir="false" afterPath="$PROJECT_DIR$/lotofacil.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lotofacil_neural.py" beforeDir="false" afterPath="$PROJECT_DIR$/lotofacil_neural.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../crawler/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../crawler/main.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,20 +24,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.cryptoLSTM.executor": "Run",
-    "Python.cryptoRandomForest.executor": "Run",
-    "Python.dataset.executor": "Run",
-    "Python.lotofacil.executor": "Run",
-    "Python.lotofacil_neural.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/git/lotomachine/ai",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.cryptoLSTM.executor&quot;: &quot;Run&quot;,
+    &quot;Python.cryptoRandomForest.executor&quot;: &quot;Run&quot;,
+    &quot;Python.dataset.executor&quot;: &quot;Run&quot;,
+    &quot;Python.lotofacil.executor&quot;: &quot;Run&quot;,
+    &quot;Python.lotofacil_neural.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/git/lotomachine/ai&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Python.lotofacil">
     <configuration name="cryptoLSTM" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="ai" />
