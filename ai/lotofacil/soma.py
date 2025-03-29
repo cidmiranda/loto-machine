@@ -1,2 +1,3 @@
+import json
 from utils import somas
-print(somas())
+print(json.dumps(somas()))

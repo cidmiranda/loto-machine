@@ -1,4 +1,5 @@
 import pandas as pd
+import json
 from utils import read_data_set
 
 df = read_data_set()
@@ -10,4 +11,9 @@ frequencia_numeros = pd.Series(todos_os_numeros).value_counts().sort_values(asce
 #Probabilidade de Sorteio de Cada Número (teórica)
 total_sorteios = len(df)
 probabilidades = frequencia_numeros / total_sorteios
-print(probabilidades.head(25))
+
+# Converter para um dicionário antes de serializar para JSON
+probabilidades_dict = probabilidades.head(25).to_dict()
+
+# Retornar JSON formatado corretamente
+print(json.dumps(probabilidades_dict, indent=4))

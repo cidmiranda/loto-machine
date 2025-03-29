@@ -5,18 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7efaec53-1b2f-42a1-b9f0-89fb1d7a1e1b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/completar_lista.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lotofacil/acertos_concurso.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lotofacil/completa_numeros.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lotofacil/completa_numeros_random.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lotofacil/consecutivos.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lotofacil/faixas.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lotofacil/frequencias.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lotofacil/par_impar.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lotofacil/probabilidade_numero.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lotofacil/soma.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lotofacil/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lotofacil/consecutivos.py" beforeDir="false" afterPath="$PROJECT_DIR$/lotofacil/consecutivos.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lotofacil/faixas.py" beforeDir="false" afterPath="$PROJECT_DIR$/lotofacil/faixas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lotofacil/frequencias.py" beforeDir="false" afterPath="$PROJECT_DIR$/lotofacil/frequencias.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lotofacil/par_impar.py" beforeDir="false" afterPath="$PROJECT_DIR$/lotofacil/par_impar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lotofacil/probabilidade_numero.py" beforeDir="false" afterPath="$PROJECT_DIR$/lotofacil/probabilidade_numero.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lotofacil/soma.py" beforeDir="false" afterPath="$PROJECT_DIR$/lotofacil/soma.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lotofacil/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/lotofacil/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lotofacil_neural.py" beforeDir="false" afterPath="$PROJECT_DIR$/lotofacil_neural.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../api/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../api/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../crawler/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../crawler/main.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +44,7 @@
   "keyToString": {
     "Python.acertos_concurso.executor": "Run",
     "Python.completa_numeros.executor": "Run",
+    "Python.completa_numeros_random.executor": "Run",
     "Python.consecutivos.executor": "Run",
     "Python.cryptoLSTM.executor": "Run",
     "Python.cryptoRandomForest.executor": "Run",
@@ -63,7 +63,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "last_opened_file_path": "C:/git/lotomachine/ai",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -71,7 +71,7 @@
       <recent name="C:\git\lotomachine\ai\lotofacil" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.completa_numeros">
+  <component name="RunManager" selected="Python.acertos_concurso">
     <configuration name="acertos_concurso" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="ai" />
       <option name="ENV_FILES" value="" />

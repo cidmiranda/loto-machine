@@ -1,7 +1,5 @@
 import os
 
-from lotofacil import completar_lista
-
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suprime logs do TensorFlow
 import warnings
 warnings.filterwarnings("ignore")
@@ -89,4 +87,5 @@ previsao_numeros = np.argmax(previsao, axis=2) + 1  # Convertendo para a faixa d
 
 #print("\nPrevisão para o próximo sorteio:")
 previsao_sem_repetidos = list(set(previsao_numeros.flatten()))
-print(completar_lista(sorted(previsao_sem_repetidos)))
+print(previsao_sem_repetidos)
+#print(completar_lista(sorted(previsao_sem_repetidos)))

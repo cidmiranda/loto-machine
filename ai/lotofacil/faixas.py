@@ -1,3 +1,3 @@
+import json
 from utils import faixas
-
-print(faixas())
+print(json.dumps(faixas()))

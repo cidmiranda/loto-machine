@@ -2,9 +2,11 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os/exec"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -25,7 +27,8 @@ type Sorteio struct {
 }
 
 type InputData struct {
-	Numbers []int `json:"numbers"`
+	Numbers  []int `json:"numbers"`
+	Concurso []int `json:"concurso"`
 }
 
 type NumeroFrequencia struct {
@@ -224,6 +227,358 @@ func getNumerosMaisMenosSorteados(c *gin.Context) {
 	c.JSON(http.StatusOK, retorno)
 }
 
+func frequenciasHandler(c *gin.Context) {
+
+	// Chama o script Python para fazer a previsão
+	cmd := exec.Command("C:\\Users\\Cid\\anaconda3\\python.exe", "../ai/lotofacil/frequencias.py")
+
+	// Capturar a saída padrão e de erro
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+
+	// Executa o comando
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("Erro ao executar o script Python:", err)
+		fmt.Println("Saída de erro:", stderr.String()) // Mostra o erro do Python
+		return
+	}
+
+	// Variável para armazenar o JSON convertido
+	var frequencias map[string]int
+
+	// Exibir saída do script
+	fmt.Println("Saída do script Python:", out.String())
+
+	err = json.Unmarshal(out.Bytes(), &frequencias)
+	if err != nil {
+		fmt.Println("Erro ao converter JSON: %v", err)
+		c.JSON(500, gin.H{"error": "Erro ao converter JSON"})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"frequencias": frequencias,
+	})
+}
+
+func parImparHandler(c *gin.Context) {
+
+	// Chama o script Python para fazer a previsão
+	cmd := exec.Command("C:\\Users\\Cid\\anaconda3\\python.exe", "../ai/lotofacil/par_impar.py")
+
+	// Capturar a saída padrão e de erro
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+
+	// Executa o comando
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("Erro ao executar o script Python:", err)
+		fmt.Println("Saída de erro:", stderr.String()) // Mostra o erro do Python
+		return
+	}
+
+	// Variável para armazenar o JSON convertido
+	var parImpar map[string]int
+
+	// Exibir saída do script
+	fmt.Println("Saída do script Python:", out.String())
+
+	err = json.Unmarshal(out.Bytes(), &parImpar)
+	if err != nil {
+		fmt.Println("Erro ao converter JSON: %v", err)
+		c.JSON(500, gin.H{"error": "Erro ao converter JSON"})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"parImpar": parImpar,
+	})
+}
+
+func faixasHandler(c *gin.Context) {
+
+	// Chama o script Python para fazer a previsão
+	cmd := exec.Command("C:\\Users\\Cid\\anaconda3\\python.exe", "../ai/lotofacil/faixas.py")
+
+	// Capturar a saída padrão e de erro
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+
+	// Executa o comando
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("Erro ao executar o script Python:", err)
+		fmt.Println("Saída de erro:", stderr.String()) // Mostra o erro do Python
+		return
+	}
+
+	// Variável para armazenar o JSON convertido
+	var faixas map[string]int
+
+	// Exibir saída do script
+	fmt.Println("Saída do script Python:", out.String())
+
+	err = json.Unmarshal(out.Bytes(), &faixas)
+	if err != nil {
+		fmt.Println("Erro ao converter JSON: %v", err)
+		c.JSON(500, gin.H{"error": "Erro ao converter JSON"})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"faixas": faixas,
+	})
+}
+func somaHandler(c *gin.Context) {
+
+	type SomaHistorica struct {
+		Concurso    int `json:"concurso"`
+		SomaNumeros int `json:"soma_numeros"`
+	}
+
+	type SomaHistoricaTemp struct {
+		Concurso    string `json:"concurso"`
+		SomaNumeros int    `json:"soma_numeros"`
+	}
+
+	// Chama o script Python para fazer a previsão
+	cmd := exec.Command("C:\\Users\\Cid\\anaconda3\\python.exe", "../ai/lotofacil/soma.py")
+
+	// Capturar a saída padrão e de erro
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+
+	// Executa o comando
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("Erro ao executar o script Python:", err)
+		fmt.Println("Saída de erro:", stderr.String()) // Mostra o erro do Python
+		return
+	}
+
+	// Estrutura temporária para capturar concursos como string
+	var tempSomas []SomaHistoricaTemp
+
+	// Exibir saída do script
+	fmt.Println("Saída do script Python:", out.String())
+
+	err = json.Unmarshal(out.Bytes(), &tempSomas)
+	if err != nil {
+		fmt.Println("Erro ao converter JSON: %v", err)
+		c.JSON(500, gin.H{"error": "Erro ao converter JSON"})
+		return
+	}
+
+	// Converter Concurso de string para int
+	var somas []SomaHistorica
+	for _, temp := range tempSomas {
+		concursoInt, err := strconv.Atoi(temp.Concurso)
+		if err != nil {
+			fmt.Println("Erro ao converter Concurso para int:", err)
+			continue
+		}
+		somas = append(somas, SomaHistorica{
+			Concurso:    concursoInt,
+			SomaNumeros: temp.SomaNumeros,
+		})
+	}
+
+	// Ordenar pelo campo Concurso
+	sort.Slice(somas, func(i, j int) bool {
+		return somas[i].Concurso < somas[j].Concurso
+	})
+
+	c.JSON(200, gin.H{
+		"somas": somas,
+	})
+}
+func consecutivosHandler(c *gin.Context) {
+
+	type Consecutivos struct {
+		Concurso     int `json:"concurso"`
+		Consecutivos int `json:"consecutivos"`
+	}
+
+	type ConsecutivosTemp struct {
+		Concurso     string `json:"concurso"`
+		Consecutivos int    `json:"consecutivos"`
+	}
+
+	// Chama o script Python para fazer a previsão
+	cmd := exec.Command("C:\\Users\\Cid\\anaconda3\\python.exe", "../ai/lotofacil/consecutivos.py")
+
+	// Capturar a saída padrão e de erro
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+
+	// Executa o comando
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("Erro ao executar o script Python:", err)
+		fmt.Println("Saída de erro:", stderr.String()) // Mostra o erro do Python
+		return
+	}
+
+	// Estrutura temporária para capturar concursos como string
+	var tempConsecutivos []ConsecutivosTemp
+
+	// Exibir saída do script
+	fmt.Println("Saída do script Python:", out.String())
+
+	err = json.Unmarshal(out.Bytes(), &tempConsecutivos)
+	if err != nil {
+		fmt.Println("Erro ao converter JSON: %v", err)
+		c.JSON(500, gin.H{"error": "Erro ao converter JSON"})
+		return
+	}
+
+	// Converter Concurso de string para int
+	var consecutivos []Consecutivos
+	for _, temp := range tempConsecutivos {
+		concursoInt, err := strconv.Atoi(temp.Concurso)
+		if err != nil {
+			fmt.Println("Erro ao converter Concurso para int:", err)
+			continue
+		}
+		consecutivos = append(consecutivos, Consecutivos{
+			Concurso:     concursoInt,
+			Consecutivos: temp.Consecutivos,
+		})
+	}
+
+	// Ordenar pelo campo Concurso
+	sort.Slice(consecutivos, func(i, j int) bool {
+		return consecutivos[i].Concurso < consecutivos[j].Concurso
+	})
+
+	c.JSON(200, gin.H{
+		"consecutivos": consecutivos,
+	})
+}
+func probabilidadeHandler(c *gin.Context) {
+	type Probabilidade struct {
+		Numero        int     `json:"numero"`
+		Probabilidade float32 `json:"probabilidade"`
+	}
+	// Chama o script Python para fazer a previsão
+	cmd := exec.Command("C:\\Users\\Cid\\anaconda3\\python.exe", "../ai/lotofacil/probabilidade_numero.py")
+
+	// Capturar a saída padrão e de erro
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+
+	// Executa o comando
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("Erro ao executar o script Python:", err)
+		fmt.Println("Saída de erro:", stderr.String()) // Mostra o erro do Python
+		return
+	}
+
+	// Estrutura temporária para capturar JSON como map[string]float32
+	var tempProbabilidades map[string]float32
+
+	// Exibir saída do script
+	fmt.Println("Saída do script Python:", out.String())
+
+	err = json.Unmarshal(out.Bytes(), &tempProbabilidades)
+	if err != nil {
+		fmt.Println("Erro ao converter JSON: %v", err)
+		c.JSON(500, gin.H{"error": "Erro ao converter JSON"})
+		return
+	}
+
+	// Converter para slice de structs
+	var probabilidades []Probabilidade
+	for key, value := range tempProbabilidades {
+		numeroInt, err := strconv.Atoi(key)
+		if err != nil {
+			fmt.Println("Erro ao converter Número para int:", err)
+			continue
+		}
+		probabilidades = append(probabilidades, Probabilidade{
+			Numero:        numeroInt,
+			Probabilidade: value,
+		})
+	}
+
+	// Ordenar pelo número
+	sort.Slice(probabilidades, func(i, j int) bool {
+		return probabilidades[i].Numero < probabilidades[j].Numero
+	})
+
+	c.JSON(200, gin.H{
+		"probabilidades": probabilidades,
+	})
+}
+func acertostHandler(c *gin.Context) {
+	var input InputData
+	// Decodifica os dados de entrada
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Chama o script Python para fazer a previsão
+	numbers := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(input.Numbers)), ","), "[]")
+	concurso := input.Concurso
+	concatenated := fmt.Sprintf("%d%s", numbers, concurso)
+	cmd := exec.Command("C:\\Users\\Cid\\anaconda3\\python.exe", "../ai/lotofacil/acertos_concurso.py", concatenated)
+	fmt.Println(concatenated)
+	// Capturar a saída padrão e de erro
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+
+	// Executa o comando
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("Erro ao executar o script Python:", err)
+		fmt.Println("Saída de erro:", stderr.String()) // Mostra o erro do Python
+		return
+	}
+
+	acertos := strings.TrimSpace(out.String())     // Remover espaços extras
+	acertosNummeros := strings.Split(acertos, ",") // Separar por vírgula
+	// Exibir saída do script
+	fmt.Println("Saída do script Python:", out.String())
+	/*
+			output, err := cmd.Output()
+			if err != nil {
+				log.Printf("Erro ao executar o script Python: %v", err)
+				c.JSON(500, gin.H{"error": "Erro ao executar o script Python"})
+				return
+			}
+
+		// Envia a resposta com a previsão
+		var prediction float64
+		_, err = fmt.Sscanf(string(output), "%f", &prediction)
+		if err != nil {
+			log.Printf("Erro ao processar a previsão: %v", err)
+			c.JSON(500, gin.H{"error": "Erro ao processar a previsão"})
+			return
+		}
+	*/
+	c.JSON(200, gin.H{
+		"acertos": acertosNummeros,
+	})
+
+}
 func predictHandler(c *gin.Context) {
 	var input InputData
 	// Decodifica os dados de entrada
@@ -285,6 +640,13 @@ func main() {
 	r.GET("/sorteios/:concurso", getSorteioPorConcurso)              // Busca um concurso específico
 	r.GET("/sorteios/stats/sorteados", getNumerosMaisMenosSorteados) // Retorna os números mais e menos sorteados
 	r.POST("/predict", predictHandler)
+	r.GET("/lotofacil/frequencias", frequenciasHandler)
+	r.GET("/lotofacil/parImpar", parImparHandler)
+	r.GET("/lotofacil/faixas", faixasHandler)
+	r.GET("/lotofacil/somas", somaHandler)
+	r.GET("/lotofacil/consecutivos", consecutivosHandler)
+	r.GET("/lotofacil/probabilidades", probabilidadeHandler)
+	r.POST("/lotofacil/acertos", acertostHandler)
 	// Inicia o servidor na porta 8080
 	r.Run(":8080")
 }

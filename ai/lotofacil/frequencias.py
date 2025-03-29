@@ -1,2 +1,3 @@
+import json
 from utils import frequencias
-print(frequencias())
+print(json.dumps(frequencias()))

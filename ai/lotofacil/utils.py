@@ -2,9 +2,8 @@ import random
 
 import pandas as pd
 
-
 def read_data_set():
-    df = pd.read_csv('../dataset/lotofacil_historico.csv', header=None)
+    df = pd.read_csv('C:\\git\\lotomachine\\ai\\dataset\\lotofacil_historico.csv', header=None)
     # Renomear as colunas
     df.columns = ['concurso', 'data'] + [f'numero_{i}' for i in range(1, 16)]
     # Aplicando a conversão nas colunas de números (começando da coluna 2 até a última)
@@ -160,5 +159,5 @@ def frequencias():
 def somas():
     df = read_data_set()
     df['soma_numeros'] = df['numeros'].apply(sum)
-    somas_historicas = df['soma_numeros'].tolist()
+    somas_historicas = df[['concurso', 'soma_numeros']].to_dict(orient='records')
     return somas_historicas
